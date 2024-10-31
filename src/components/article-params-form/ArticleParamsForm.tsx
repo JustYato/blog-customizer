@@ -1,14 +1,122 @@
+import styles from './ArticleParamsForm.module.scss';
+import { FormEvent, useRef, useState } from 'react';
+import clsx from 'clsx';
+import { Select } from '../select';
 import { ArrowButton } from 'components/arrow-button';
 import { Button } from 'components/button';
+import {
+	fontFamilyOptions,
+	fontColors,
+	backgroundColors,
+	contentWidthArr,
+	fontSizeOptions,
+	defaultArticleState,
+	ArticleStateType,
+} from 'src/constants/articleProps';
+import { RadioGroup } from '../radio-group';
+import { Separator } from '../separator';
+import { useOutsideClickClose } from '../select/hooks/useOutsideClickClose';
+import { Text } from '../text';
 
-import styles from './ArticleParamsForm.module.scss';
+type ArticleParamsFormProps = {
+	currentArticleState: ArticleStateType;
+	setCurrentArticleState: (articleState: ArticleStateType) => void;
+};
 
-export const ArticleParamsForm = () => {
+export const ArticleParamsForm = ({
+	currentArticleState,
+	setCurrentArticleState,
+}: ArticleParamsFormProps) => {
+	const [isOpen, setIsOpen] = useState(false);
+	const formRef = useRef<HTMLDivElement | null>(null);
+	const [currentFontFamily, setCurrentFontFamily] = useState(
+		currentArticleState.fontFamilyOption
+	);
+	const [currentFontSize, setCurrentFontSize] = useState(
+		currentArticleState.fontSizeOption
+	);
+	const [currentFontColor, setCurrentFontColor] = useState(
+		currentArticleState.fontColor
+	);
+	const [currentBackgroundColor, setCurrentBackgroundColor] = useState(
+		currentArticleState.backgroundColor
+	);
+	const [currentContentWidthArr, setCurrentContentWidthArr] = useState(
+		currentArticleState.contentWidth
+	);
+
+	const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
+		const formState = {
+			fontFamilyOption: currentFontFamily,
+			fontSizeOption: currentFontSize,
+			fontColor: currentFontColor,
+			backgroundColor: currentBackgroundColor,
+			contentWidth: currentContentWidthArr,
+		};
+		e.preventDefault();
+		setCurrentArticleState(formState);
+	};
+
+	const handleFormReset = () => {
+		setCurrentFontFamily(defaultArticleState.fontFamilyOption);
+		setCurrentFontSize(defaultArticleState.fontSizeOption);
+		setCurrentFontColor(defaultArticleState.fontColor);
+		setCurrentBackgroundColor(defaultArticleState.backgroundColor);
+		setCurrentContentWidthArr(defaultArticleState.contentWidth);
+		setCurrentArticleState(defaultArticleState);
+	};
+
+	useOutsideClickClose({
+		isOpen,
+		rootRef: formRef,
+		onChange: setIsOpen,
+	});
+
 	return (
 		<>
-			<ArrowButton />
-			<aside className={styles.container}>
-				<form className={styles.form}>
+			<ArrowButton isOpen={isOpen} setIsOpen={() => setIsOpen(!isOpen)} />
+			<aside
+				className={clsx(styles.container, isOpen && styles.container_open)}
+				ref={formRef}>
+				<form
+					className={styles.form}
+					onSubmit={handleFormSubmit}
+					onReset={handleFormReset}>
+					<Text as={'h2'} size={31} weight={800} uppercase={true}>
+						задайте параметры
+					</Text>
+					<Select
+						selected={currentFontFamily}
+						options={fontFamilyOptions}
+						title='Шрифт'
+						onChange={setCurrentFontFamily}
+					/>
+					<RadioGroup
+						name='18px'
+						title='Размер шрифта'
+						selected={currentFontSize}
+						options={fontSizeOptions}
+						onChange={setCurrentFontSize}
+					/>
+					<Select
+						selected={currentFontColor}
+						options={fontColors}
+						title='Цвет шрифта'
+						onChange={setCurrentFontColor}
+					/>
+					<Separator />
+					<Select
+						selected={currentBackgroundColor}
+						options={backgroundColors}
+						title='Цвет фона'
+						onChange={setCurrentBackgroundColor}
+					/>
+					<Select
+						selected={currentContentWidthArr}
+						options={contentWidthArr}
+						title='Ширина контента'
+						onChange={setCurrentContentWidthArr}
+					/>
 					<div className={styles.bottomContainer}>
 						<Button title='Сбросить' type='reset' />
 						<Button title='Применить' type='submit' />

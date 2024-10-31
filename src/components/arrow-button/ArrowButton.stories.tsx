@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-
 import { ArrowButton } from './ArrowButton';
 
 const meta: Meta<typeof ArrowButton> = {
@@ -9,12 +8,14 @@ const meta: Meta<typeof ArrowButton> = {
 export default meta;
 type Story = StoryObj<typeof ArrowButton>;
 
+const ArrowButtonState = () => {
+	return (
+		<>
+			<ArrowButton isOpen={true} setIsOpen={() => console.log('')} />
+		</>
+	);
+};
+
 export const ArrowButtonStory: Story = {
-	render: () => {
-		return (
-			<>
-				<ArrowButton />
-			</>
-		);
-	},
+	render: () => <ArrowButtonState />,
 };

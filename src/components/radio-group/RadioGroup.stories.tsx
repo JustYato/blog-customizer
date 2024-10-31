@@ -1,37 +1,43 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import { OptionType } from 'src/constants/articleProps';
+import { Text } from 'components/text';
+import { Option } from './Option';
+import styles from './RadioGroup.module.scss';
 
-import { RadioGroup } from './RadioGroup';
-import { useState } from 'react';
-
-const meta: Meta<typeof RadioGroup> = {
-	component: RadioGroup,
+type RadioGroupProps = {
+	name: string;
+	options: OptionType[];
+	selected: OptionType;
+	onChange?: (value: OptionType) => void;
+	title: string;
 };
 
-export default meta;
-type Story = StoryObj<typeof RadioGroup>;
+export const RadioGroup = (props: RadioGroupProps) => {
+	const { name, options, selected, onChange, title } = props;
 
-const RadioGroupWithState = () => {
-	const options = [
-		{ title: '1 опция', value: '1 опция', className: '' },
-		{ title: '2 опция', value: '2 опция', className: '' },
-		{ title: '3 опция', value: '3 опция', className: '' },
-		{ title: '4 опция', value: '4 опция', className: '' },
-	];
-	const [selected, setSelected] = useState(options[0]);
+	const handleChange = (option: OptionType) => onChange?.(option);
 
 	return (
-		<>
-			<RadioGroup
-				selected={selected}
-				name='radio'
-				onChange={setSelected}
-				options={options}
-				title='Название радиогруппы'
-			/>
-		</>
+		<div className={styles.container}>
+			{title && (
+				<>
+					<Text weight={800} size={12} uppercase>
+						{title}
+					</Text>
+				</>
+			)}
+			<div className={styles.group}>
+				{options.map((option) => (
+					<Option
+						key={option.value}
+						groupName={name}
+						value={option.value}
+						title={option.title}
+						selected={selected}
+						onChange={() => handleChange(option)}
+						option={option}
+					/>
+				))}
+			</div>
+		</div>
 	);
-};
-
-export const RadioGroupStory: Story = {
-	render: () => <RadioGroupWithState />,
 };

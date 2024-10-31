@@ -8,7 +8,6 @@ import { Option } from './Option';
 import { isFontFamilyClass } from './helpers/isFontFamilyClass';
 import { useEnterSubmit } from './hooks/useEnterSubmit';
 import { useOutsideClickClose } from './hooks/useOutsideClickClose';
-
 import styles from './Select.module.scss';
 
 type SelectProps = {
@@ -78,9 +77,7 @@ export const Select = (props: SelectProps) => {
 					ref={placeholderRef}>
 					<Text
 						family={
-							isFontFamilyClass(selected?.className)
-								? selected?.className
-								: undefined
+							isFontFamilyClass(selected?.className) ? selected?.className : undefined
 						}>
 						{selected?.title || placeholder}
 					</Text>
