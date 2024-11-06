@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client';
-import { StrictMode, CSSProperties } from 'react';
+import { StrictMode, useState, CSSProperties } from 'react';
 import clsx from 'clsx';
 
 import { Article } from './components/article/Article';
@@ -9,30 +9,42 @@ import { defaultArticleState } from './constants/articleProps';
 import './styles/index.scss';
 import styles from './styles/index.module.scss';
 
-const domNode = document.getElementById('root') as HTMLDivElement;
-const root = createRoot(domNode);
+interface customStyles extends CSSProperties {
+	'--font-family': string;
+	'--font-size': string;
+	'--font-color': string;
+	'--container-width': string;
+	'--bg-color': string;
+}
 
-const App = () => {
+const RootComponent = () => {
+	const [articleSettings, updateArticleSettings] =
+		useState(defaultArticleState);
+
+	const customStyles: customStyles = {
+		'--font-family': articleSettings.fontFamilyOption.value,
+		'--font-size': articleSettings.fontSizeOption.value,
+		'--font-color': articleSettings.fontColor.value,
+		'--container-width': articleSettings.contentWidth.value,
+		'--bg-color': articleSettings.backgroundColor.value,
+	};
+
 	return (
-		<div
-			className={clsx(styles.main)}
-			style={
-				{
-					'--font-family': defaultArticleState.fontFamilyOption.value,
-					'--font-size': defaultArticleState.fontSizeOption.value,
-					'--font-color': defaultArticleState.fontColor.value,
-					'--container-width': defaultArticleState.contentWidth.value,
-					'--bg-color': defaultArticleState.backgroundColor.value,
-				} as CSSProperties
-			}>
-			<ArticleParamsForm />
+		<div className={clsx(styles.main)} style={customStyles}>
+			<ArticleParamsForm
+				currentArticleState={articleSettings}
+				setCurrentArticleState={updateArticleSettings}
+			/>
 			<Article />
 		</div>
 	);
 };
 
+const domElement = document.getElementById('root') as HTMLDivElement;
+const root = createRoot(domElement);
+
 root.render(
 	<StrictMode>
-		<App />
+		<RootComponent />
 	</StrictMode>
 );
